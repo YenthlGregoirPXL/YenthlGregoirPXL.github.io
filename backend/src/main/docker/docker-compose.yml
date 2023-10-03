@@ -1,0 +1,31 @@
+version: "3.3"
+
+services:
+  thesis-db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: 'thesisdb'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'admin'
+
+  spring-boot-app:
+    image: backenddarts:tag  # Replace with the name and tag of your Spring Boot app's Docker image
+    ports:
+      - "8090:8090"
+    depends_on:
+      - thesis-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://thesis-db:3306/thesisdb
+      SPRING_DATASOURCE_USERNAME: 'user'
+      SPRING_DATASOURCE_PASSWORD: 'password'
+
+  vuejs-frontend:
+    image: frontdarts:tag  # Replace with the name and tag of your Vue.js frontend Docker image
+    ports:
+      - "8082:8082" # Map the container's port 8080 to the host machine's port 8080
+    depends_on:
+      - spring-boot-app
+  
